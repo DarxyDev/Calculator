@@ -19,18 +19,63 @@ header, footer{
     background-color:var(--light);
     padding:10px 0px;
 }
+button{
+    border-radius:1vmin;
+    border:none;
+    box-shadow:2px 2px;
+    cursor:pointer;
+    transition: 300ms;
+    font-size:1.15em;
+    width:1fr;
+    height:1fr;
+}
+button:active{
+    box-shadow:none;
+}
+button:hover{
+    font-size:1.5em;
+    padding:0em;
+}
 #content{
     height:100%;
 }
+/* generic */
+.fl-col-spcBtwn {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.fl-row-ctr {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+}
+/* calculator */
 #calc-container{
+    aspect-ratio:3/4;
     background-color:var(--light);
     flex-shrink:1;
-    width:300px;
-    height:400px;
+    padding:8px;
+    border-radius:1vmin;
+    box-shadow:4px 4px;
     display:grid;
     grid-gap:10px;
-    grid-template-rows:repeat(14,1fr);
-    grid-template-columns:repeat(8,1fr);
+    grid-auto-rows:3em;
+    grid-auto-columns:4em;
+    grid-template-areas: 
+                    "sc sc sc sc"
+                    "sc sc sc sc"
+                    "mc mr mp mm"
+                    "n7 n8 n9 om"
+                    "n4 n5 n6 od"
+                    "n1 n2 n3 os"
+                    "n0 nd nn oa"
+                    "c . oe oe"
+}
+#calc-container > button{
 }
 /* button types */
 .display{
@@ -47,85 +92,74 @@ header, footer{
 }
 /* calc ids */
 #screen{
-    grid-area:1/1/4/9;
+    grid-area:sc;
 }
 #mPlus{
-    grid-area:4/1/4/3;
+    grid-area:mp;
 
 }
 #mMinus{
-    grid-area:4/3/4/5;
+    grid-area:mm;
 
 }
 #mR{
-    grid-area:4/5/4/7;
+    grid-area:mr;
 
 }
 #mC{
-    grid-area:4/7/4/9;
+    grid-area:mc;
 }
 #num9{
-    grid-area:5/5/7/7;
+    grid-area:n9;
 }
 #num8{
-    grid-area:5/3/7/5;
+    grid-area:n8;
 }
 #num7{
-    grid-area:5/1/7/3;
+    grid-area:n7;
 }
 #num6{   
-     grid-area:7/5/9/7;
+     grid-area:n6;
 }
 #num5{
-    grid-area:7/3/9/5;
+    grid-area:n5;
 }
 #num4{
-    grid-area:7/1/9/3;
+    grid-area:n4;
 }
 #num3{
-    grid-area:9/5/11/7;
+    grid-area:n3;
 }
 #num2{
-    grid-area:9/3/11/5;
+    grid-area:n2;
 }
 #num1{
-    grid-area:9/1/11/3;
+    grid-area:n1;
 }
 #num0{
-    grid-area:11/3/13/5;
+    grid-area:n0;
 }
 #decimal{
-    grid-area:11/5/13/7;
+    grid-area:nd;
+}
+#negative{
+    grid-area:nn;
 }
 #multiply{
-    grid-area:5/7/7/9;
+    grid-area:om;
 }
 #divide{
-    grid-area:7/7/9/9;
+    grid-area:od;
 }
 #subtract{
-    grid-area:9/7/11/9;
+    grid-area:os;
 }
 #add{
-    grid-area:11/7/13/9;
+    grid-area:oa;
 }
 #equals{
-    display:none;
+    grid-area:oe;
 }
 #clear{
-
-}
-/* generic */
-.fl-col-spcBtwn {
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-}
-
-.fl-row-ctr {
-    display: flex;
-    width: 100%;
-    justify-content: center;
-    align-items: center;
+    grid-area:c;
 }
