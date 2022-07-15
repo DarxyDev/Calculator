@@ -1,0 +1,131 @@
+:root{
+    --darker: #576F72;
+    --dark:#7D9D9C;
+    --light:#E4DCCF;
+    --lighter:#F0EBE3;
+}
+html,
+body {
+    width: 100%;
+    height: 100%;
+}
+body {
+    margin: 0;
+    padding: 0;
+    font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    background-color: var(--darker);
+}
+header, footer{
+    background-color:var(--light);
+    padding:10px 0px;
+}
+#content{
+    height:100%;
+}
+#calc-container{
+    background-color:var(--light);
+    flex-shrink:1;
+    width:300px;
+    height:400px;
+    display:grid;
+    grid-gap:10px;
+    grid-template-rows:repeat(14,1fr);
+    grid-template-columns:repeat(8,1fr);
+}
+/* button types */
+.display{
+    background-color: red;
+}
+.memButton{
+    background-color:green;
+}
+.opButton{
+    background-color:lightblue;
+}
+.numButton{
+    background-color:grey;
+}
+/* calc ids */
+#screen{
+    grid-area:1/1/4/9;
+}
+#mPlus{
+    grid-area:4/1/4/3;
+
+}
+#mMinus{
+    grid-area:4/3/4/5;
+
+}
+#mR{
+    grid-area:4/5/4/7;
+
+}
+#mC{
+    grid-area:4/7/4/9;
+}
+#num9{
+    grid-area:5/5/7/7;
+}
+#num8{
+    grid-area:5/3/7/5;
+}
+#num7{
+    grid-area:5/1/7/3;
+}
+#num6{   
+     grid-area:7/5/9/7;
+}
+#num5{
+    grid-area:7/3/9/5;
+}
+#num4{
+    grid-area:7/1/9/3;
+}
+#num3{
+    grid-area:9/5/11/7;
+}
+#num2{
+    grid-area:9/3/11/5;
+}
+#num1{
+    grid-area:9/1/11/3;
+}
+#num0{
+    grid-area:11/3/13/5;
+}
+#decimal{
+    grid-area:11/5/13/7;
+}
+#multiply{
+    grid-area:5/7/7/9;
+}
+#divide{
+    grid-area:7/7/9/9;
+}
+#subtract{
+    grid-area:9/7/11/9;
+}
+#add{
+    grid-area:11/7/13/9;
+}
+#equals{
+    display:none;
+}
+#clear{
+
+}
+/* generic */
+.fl-col-spcBtwn {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.fl-row-ctr {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+}
