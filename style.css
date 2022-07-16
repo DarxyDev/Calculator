@@ -1,8 +1,12 @@
 :root{
     --darker: #576F72;
     --dark:#7D9D9C;
-    --light:#E4DCCF;
+    --light:#e4dccfb4;
     --lighter:#F0EBE3;
+    --opButton: lightBlue;
+    --numButton: var(--darker);
+    --memButton: green;
+    --display: #b3cfce;
 }
 html,
 body {
@@ -34,7 +38,7 @@ button:active{
 }
 button:hover{
     font-size:1.5em;
-    padding:0em;
+    opacity:.8;
 }
 #content{
     height:100%;
@@ -56,7 +60,7 @@ button:hover{
 /* calculator */
 #calc-container{
     aspect-ratio:3/4;
-    background-color:var(--light);
+    background-color:var(--dark);
     flex-shrink:1;
     padding:8px;
     border-radius:1vmin;
@@ -75,91 +79,38 @@ button:hover{
                     "n0 nd nn oa"
                     "c . oe oe"
 }
-#calc-container > button{
-}
 /* button types */
 .display{
-    background-color: red;
+    background-color: var(--display);
+    border-radius:1vmin;
 }
-.memButton{
-    background-color:green;
-}
-.opButton{
-    background-color:lightblue;
-}
-.numButton{
-    background-color:grey;
-}
+.memButton{background-color:var(--memButton);}
+.opButton{background-color:var(--opButton);}
+.numButton{background-color:var(--numButton);}
 /* calc ids */
-#screen{
-    grid-area:sc;
-}
-#mPlus{
-    grid-area:mp;
-
-}
-#mMinus{
-    grid-area:mm;
-
-}
-#mR{
-    grid-area:mr;
-
-}
-#mC{
-    grid-area:mc;
-}
-#num9{
-    grid-area:n9;
-}
-#num8{
-    grid-area:n8;
-}
-#num7{
-    grid-area:n7;
-}
-#num6{   
-     grid-area:n6;
-}
-#num5{
-    grid-area:n5;
-}
-#num4{
-    grid-area:n4;
-}
-#num3{
-    grid-area:n3;
-}
-#num2{
-    grid-area:n2;
-}
-#num1{
-    grid-area:n1;
-}
-#num0{
-    grid-area:n0;
-}
-#decimal{
-    grid-area:nd;
-}
-#negative{
-    grid-area:nn;
-}
-#multiply{
-    grid-area:om;
-}
-#divide{
-    grid-area:od;
-}
-#subtract{
-    grid-area:os;
-}
-#add{
-    grid-area:oa;
-}
-#equals{
-    grid-area:oe;
-}
-#clear{
-    grid-area:c;
-}
+#screen{grid-area:sc;}
+/* mem buttons */
+#mPlus{grid-area:mp;}
+#mMinus{grid-area:mm;}
+#mR{grid-area:mr;}
+#mC{grid-area:mc;}
+/* number buttons */
+#num9{grid-area:n9;}
+#num8{grid-area:n8;}
+#num7{grid-area:n7;}
+#num6{grid-area:n6;}
+#num5{grid-area:n5;}
+#num4{grid-area:n4;}
+#num3{grid-area:n3;}
+#num2{grid-area:n2;}
+#num1{grid-area:n1;}
+#num0{grid-area:n0;}
+#decimal{grid-area:nd;}
+#negative{grid-area:nn;}
+/* operation buttons */
+#multiply{grid-area:om;}
+#divide{grid-area:od;}
+#subtract{grid-area:os;}
+#add{grid-area:oa;}
+#equals{grid-area:oe;}
+#clear{grid-area:c;}
