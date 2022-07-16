@@ -88,7 +88,7 @@ button:hover{
 .opButton{background-color:var(--opButton);}
 .numButton{background-color:var(--numButton);}
 /* calc ids */
-#screen{grid-area:sc;}
+#display{grid-area:sc;}
 /* mem buttons */
 #mPlus{grid-area:mp;}
 #mMinus{grid-area:mm;}
