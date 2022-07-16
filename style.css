@@ -5,7 +5,7 @@
     --lighter:#F0EBE3;
     --opButton: lightBlue;
     --numButton: var(--darker);
-    --memButton: green;
+    --memButton: lightgreen;
     --display: #b3cfce;
 }
 html,
