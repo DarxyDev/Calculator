@@ -77,18 +77,27 @@ button:hover{
                     "n4 n5 n6 od"
                     "n1 n2 n3 os"
                     "n0 nd nn oa"
-                    "c . oe oe"
+                    "c  .. oe oe"
 }
 /* button types */
-.display{
-    background-color: var(--display);
-    border-radius:1vmin;
-}
 .memButton{background-color:var(--memButton);}
 .opButton{background-color:var(--opButton);}
 .numButton{background-color:var(--numButton);}
-/* calc ids */
-#display{grid-area:sc;}
+/* display */
+#display{
+    grid-area:sc;
+    background-color: var(--display);
+    border-radius:1vmin;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+    align-items:right;
+}
+.sub-display{
+    text-align:right;
+    padding:.25em;
+}
+#display-bottom{font-size:2em;}
 /* mem buttons */
 #mPlus{grid-area:mp;}
 #mMinus{grid-area:mm;}
