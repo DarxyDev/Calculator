@@ -3,6 +3,8 @@ const OPR = 'operation';
 const NUM = 'number';
 const FUN = 'function';
 // const values
+const DIGIT_LIMIT = 5;//14;
+//const names
 const ADD = '+';
 const SUBTRACT = '-';
 const MULTIPLY = 'x';
@@ -24,7 +26,6 @@ var equation = {
     opr: null,
     num1: 0,
     num2: null
-
 }
 //initialization
 const ref = getCalcReferences();
@@ -83,6 +84,7 @@ function doAction(type, val) {
     }
 }
 function numInput(newVal) {
+    if (lastInput.val === EQUALS) clear();
     let preVal = '0';
     if (lastInput.type !== OPR) preVal = ref.displayBottom.innerText;
     let valid = true;
@@ -103,12 +105,26 @@ function numInput(newVal) {
             preVal += newVal;
     }
     if (valid) {
+        preVal = limitDigits(preVal);
         ref.displayBottom.innerText = preVal;
         lastInput.type = NUM;
         lastInput.val = preVal;
         if (equation.opr == null) equation.num1 = +preVal;
         else equation.num2 = +preVal;
     }
+}
+//needs to replace last digit with new digit
+function limitDigits(num){
+    num = num.toString();
+    let length = DIGIT_LIMIT;
+    let isdecimal = num.includes('.');
+    if (isdecimal && num[num.length - 1] !== '.') length++;
+    if (num[0] === '-') length++;
+    if (num.length <= length) return num;
+    else{
+        console.log('digits limited');
+        return num.slice(0, num.length - 2) + num[num.length - 1];
+    } 
 }
 function oprInput(val) {
     console.log(`${val} pressed.`);
@@ -170,9 +186,29 @@ function equals() {
         default: console.log(`equals Error: Unexpected value '${equation.opr}'`);
     }
     ref.displayTop.innerText = `${equation.num1} ${equation.opr} ${equation.num2} =`;
+    result = roundDigits(result, true);
     ref.displayBottom.innerText = result;
     equation.num1 = result;
 }
+function roundDigits(num) {
+    num = num.toString();
+    length = DIGIT_LIMIT;
+    if (num.includes('.') && num[num.length - 1] !== '.') length++;
+    if (num[0] === '-') length++;
+    if (num.length <= length) return num;
+    let decPosition = num.indexOf('.');
+    if (decPosition >= 0) {
+        let decAdjust = num.length - decPosition - 1;
+        let multi = Math.pow(10, decAdjust - (num.length - length));
+        num = Math.round(+num * multi) / multi;
+    }
+    else {
+        multi = Math.pow(10, length - num.length);
+        num = Math.round(+num * multi);
+    }
+    return num;
+}
+console.log('prevent rounding in case of numInput');
 function clear() {
     equation = {
         opr: null,
