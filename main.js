@@ -18,7 +18,11 @@ const M_MINUS = 'mMinus';
 const M_CLEAR = 'mC';
 const M_RECALL = 'mR';
 //globals
-
+var equation = {
+    num1:0,
+    num2: null,
+    opr: null
+}
 //initialization
 const ref = getCalcReferences();
 setButtonEvents();
@@ -44,7 +48,7 @@ function getCalcReferences() {
     return obj;
 }
 function setButtonEvents() {
-    for (let i = 0; i < 10; i++) ref[i].addEventListener('click', () => { doAction(NUM, i) });
+    for (let i = 0; i < 10; i++) ref[i].addEventListener('click', () => { doAction(NUM, i.toString()) });
     ref.add.addEventListener('click', () => doAction(OPR_B, ADD));
     ref.subtract.addEventListener('click', () => doAction(OPR_B, SUBTRACT));
     ref.multiply.addEventListener('click', () => doAction(OPR_B, MULTIPLY));
@@ -62,6 +66,7 @@ function setButtonEvents() {
 function doAction(type, val) {
     switch (type) {
         case NUM:
+            numInput(val);
             break;
         case OPR_U:
             break;
@@ -72,4 +77,28 @@ function doAction(type, val) {
         default:
             console.log(`doAction Error: unexpected type '${type}'`);
     }
+}
+//input
+function numInput(input){
+    let txt = getLowerText();
+    if(txt.includes('.') && input === DECIMAL) return;
+    if(txt === '0' && input !== DECIMAL) txt = '';
+    txt += input;
+    setLowerText(txt);
+}
+//common functions
+function setLowerText(str){
+    ref.displayBottom.innerText = str;
+}
+function getLowerText(){
+    return ref.displayBottom.innerText;
+}
+function setUpperText(str){
+    ref.displayBottom.innerText = str;
+}
+function getUpperText(){
+    return ref.displayBottom.innerText;
+}
+function setMessageText(str){
+    console.log(`Message text box not yet implemented.. '${str}' not displayed.`);
 }
