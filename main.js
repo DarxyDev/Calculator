@@ -1,9 +1,9 @@
 //const types
-const OPR = 'operation';
+const OPR_B = 'operation_binary';
+const OPR_U = 'operation_unary'
 const NUM = 'number';
 const FUN = 'function';
 // const values
-const DIGIT_LIMIT = 13;
 //const names
 const ADD = '+';
 const SUBTRACT = '-';
@@ -18,15 +18,7 @@ const M_MINUS = 'mMinus';
 const M_CLEAR = 'mC';
 const M_RECALL = 'mR';
 //globals
-var lastInput = {
-    type: NUM,
-    val: '0'
-}
-var equation = {
-    opr: null,
-    num1: 0,
-    num2: null
-}
+
 //initialization
 const ref = getCalcReferences();
 setButtonEvents();
@@ -53,12 +45,12 @@ function getCalcReferences() {
 }
 function setButtonEvents() {
     for (let i = 0; i < 10; i++) ref[i].addEventListener('click', () => { doAction(NUM, i) });
-    ref.add.addEventListener('click', () => doAction(OPR, ADD));
-    ref.subtract.addEventListener('click', () => doAction(OPR, SUBTRACT));
-    ref.multiply.addEventListener('click', () => doAction(OPR, MULTIPLY));
-    ref.divide.addEventListener('click', () => doAction(OPR, DIVIDE));
+    ref.add.addEventListener('click', () => doAction(OPR_B, ADD));
+    ref.subtract.addEventListener('click', () => doAction(OPR_B, SUBTRACT));
+    ref.multiply.addEventListener('click', () => doAction(OPR_B, MULTIPLY));
+    ref.divide.addEventListener('click', () => doAction(OPR_B, DIVIDE));
     ref.decimal.addEventListener('click', () => doAction(NUM, DECIMAL));
-    ref.negative.addEventListener('click', () => doAction(NUM, NEGATIVE));
+    ref.negative.addEventListener('click', () => doAction(OPR_U, NEGATIVE));
     ref.equals.addEventListener('click', () => doAction(FUN, EQUALS));
     ref.clear.addEventListener('click', () => doAction(FUN, CLEAR));
     ref.mPlus.addEventListener('click', () => doAction(FUN, M_PLUS));
@@ -70,14 +62,12 @@ function setButtonEvents() {
 function doAction(type, val) {
     switch (type) {
         case NUM:
-            numInput(val);
             break;
-        case OPR:
-            oprInput(val);
+        case OPR_U:
+            break;
+        case OPR_B:
             break;
         case FUN:
-            funInput(val);
-
             break;
         default:
             console.log(`doAction Error: unexpected type '${type}'`);
