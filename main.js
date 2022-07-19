@@ -84,7 +84,7 @@ function doAction(type, val) {
     }
 }
 function numInput(newVal) {
-    if (lastInput.val === EQUALS && newVal != NEGATIVE) clear();
+    if (lastInput.val === EQUALS) clear();
     let preVal = '0';
     if (lastInput.type !== OPR) preVal = ref.displayBottom.innerText; //needs to accept equals
     let valid = true;
@@ -94,7 +94,9 @@ function numInput(newVal) {
             else valid = false;
             break;
         case newVal === NEGATIVE:
-            preVal *= -1;
+            if (+preVal > 0) preVal = '-' + preVal;
+            else if (+preVal < 0) preVal = preVal.slice(1, preVal.length);
+            else valid = false;
             break;
         case preVal === '0':
             preVal = newVal;
@@ -125,6 +127,7 @@ function limitDigits(num){
     } 
 }
 function oprInput(val) {
+    console.log(`${val} pressed.`);
     lastInput.val = val;
     if (lastInput.type === NUM) {
         lastInput.type = OPR;
@@ -136,13 +139,15 @@ function oprInput(val) {
 }
 function funInput(val) {
     lastInput.type = FUN;
-    lastInput.val = val;
+    lastInput.val
     switch (val) {
         case EQUALS:
             equals();
             break;
         case CLEAR:
             clear();
+            break;
+        case NEGATIVE:
             break;
         case M_PLUS:
             break;
@@ -158,8 +163,6 @@ function funInput(val) {
 }
 function equals() {
     if (equation.num2 === null || equation.opr === null) return;
-    equation.num1 = +equation.num1;
-    equation.num2 = +equation.num2;
     let result = 0;
     switch (equation.opr) {
         case ADD:
