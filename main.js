@@ -58,7 +58,7 @@ function setButtonEvents() {
     ref.multiply.addEventListener('click', () => doAction(OPR, MULTIPLY));
     ref.divide.addEventListener('click', () => doAction(OPR, DIVIDE));
     ref.decimal.addEventListener('click', () => doAction(NUM, DECIMAL));
-    ref.negative.addEventListener('click', () => doAction(OPR, NEGATIVE));
+    ref.negative.addEventListener('click', () => doAction(NUM, NEGATIVE));
     ref.equals.addEventListener('click', () => doAction(FUN, EQUALS));
     ref.clear.addEventListener('click', () => doAction(FUN, CLEAR));
     ref.mPlus.addEventListener('click', () => doAction(FUN, M_PLUS));
