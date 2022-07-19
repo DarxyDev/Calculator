@@ -3,7 +3,7 @@ const OPR = 'operation';
 const NUM = 'number';
 const FUN = 'function';
 // const values
-const DIGIT_LIMIT = 5;//14;
+const DIGIT_LIMIT = 13;
 //const names
 const ADD = '+';
 const SUBTRACT = '-';
@@ -58,7 +58,7 @@ function setButtonEvents() {
     ref.multiply.addEventListener('click', () => doAction(OPR, MULTIPLY));
     ref.divide.addEventListener('click', () => doAction(OPR, DIVIDE));
     ref.decimal.addEventListener('click', () => doAction(NUM, DECIMAL));
-    ref.negative.addEventListener('click', () => doAction(NUM, NEGATIVE));
+    ref.negative.addEventListener('click', () => doAction(OPR, NEGATIVE));
     ref.equals.addEventListener('click', () => doAction(FUN, EQUALS));
     ref.clear.addEventListener('click', () => doAction(FUN, CLEAR));
     ref.mPlus.addEventListener('click', () => doAction(FUN, M_PLUS));
@@ -84,9 +84,9 @@ function doAction(type, val) {
     }
 }
 function numInput(newVal) {
-    if (lastInput.val === EQUALS) clear();
+    if (lastInput.val === EQUALS && newVal != NEGATIVE) clear();
     let preVal = '0';
-    if (lastInput.type !== OPR) preVal = ref.displayBottom.innerText;
+    if (lastInput.type !== OPR) preVal = ref.displayBottom.innerText; //needs to accept equals
     let valid = true;
     switch (true) {
         case newVal === DECIMAL:
@@ -94,9 +94,7 @@ function numInput(newVal) {
             else valid = false;
             break;
         case newVal === NEGATIVE:
-            if (+preVal > 0) preVal = '-' + preVal;
-            else if (+preVal < 0) preVal = preVal.slice(1, preVal.length);
-            else valid = false;
+            preVal *= -1;
             break;
         case preVal === '0':
             preVal = newVal;
@@ -127,7 +125,6 @@ function limitDigits(num){
     } 
 }
 function oprInput(val) {
-    console.log(`${val} pressed.`);
     lastInput.val = val;
     if (lastInput.type === NUM) {
         lastInput.type = OPR;
@@ -138,7 +135,6 @@ function oprInput(val) {
     ref.displayTop.innerText = `${equation.num1} ${equation.opr}`;
 }
 function funInput(val) {
-    console.log(`${val} pressed.`);
     lastInput.type = FUN;
     lastInput.val = val;
     switch (val) {
@@ -162,6 +158,8 @@ function funInput(val) {
 }
 function equals() {
     if (equation.num2 === null || equation.opr === null) return;
+    equation.num1 = +equation.num1;
+    equation.num2 = +equation.num2;
     let result = 0;
     switch (equation.opr) {
         case ADD:
@@ -191,6 +189,7 @@ function equals() {
     equation.num1 = result;
 }
 function roundDigits(num) {
+    console.log(`initial: ${num}`);
     num = num.toString();
     length = DIGIT_LIMIT;
     if (num.includes('.') && num[num.length - 1] !== '.') length++;
@@ -200,15 +199,15 @@ function roundDigits(num) {
     if (decPosition >= 0) {
         let decAdjust = num.length - decPosition - 1;
         let multi = Math.pow(10, decAdjust - (num.length - length));
-        num = Math.round(+num * multi) / multi;
+        num = (Math.round(+num * multi) / multi).toExponential([DIGIT_LIMIT - 5]);
     }
     else {
         multi = Math.pow(10, length - num.length);
         num = Math.round(+num * multi);
     }
+    console.log(`final:   ${num}`);
     return num;
 }
-console.log('prevent rounding in case of numInput');
 function clear() {
     equation = {
         opr: null,
