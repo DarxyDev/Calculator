@@ -77,7 +77,7 @@ button:hover{
                     "n4 n5 n6 od"
                     "n1 n2 n3 os"
                     "n0 nd nn oa"
-                    "c  .. oe oe"
+                    "c  nb oe oe"
 }
 /* button types */
 .memButton{background-color:var(--memButton);}
@@ -116,6 +116,7 @@ button:hover{
 #num0{grid-area:n0;}
 #decimal{grid-area:nd;}
 #negative{grid-area:nn;}
+#backspace{grid-area:nb;}
 /* operation buttons */
 #multiply{grid-area:om;}
 #divide{grid-area:od;}

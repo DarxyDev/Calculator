@@ -4,6 +4,7 @@ const OPR_U = 'operation_unary'
 const NUM = 'number';
 const FUN = 'function';
 // const values
+const MAX_DIGITS = 13;
 //const names
 const ADD = '+';
 const SUBTRACT = '-';
@@ -11,6 +12,7 @@ const MULTIPLY = 'x';
 const DIVIDE = '/';
 const DECIMAL = '.';
 const NEGATIVE = 'negative';
+const BACKSPACE = 'backspace';
 const EQUALS = '=';
 const CLEAR = 'clear';
 const M_PLUS = 'mPlus';
@@ -19,13 +21,17 @@ const M_CLEAR = 'mC';
 const M_RECALL = 'mR';
 //globals
 var equation = {
-    num1:0,
+    num1: 0,
     num2: null,
-    opr: null
+    opr: null,
+    lastAction: null
 }
+var mem1 = 0;
+var usingNum1 = true;
 //initialization
 const ref = getCalcReferences();
 setButtonEvents();
+//functions
 function getCalcReferences() {
     let obj = {};
     for (let i = 0; i < 10; i++) {
@@ -39,6 +45,7 @@ function getCalcReferences() {
     obj.multiply = document.getElementById('multiply');
     obj.divide = document.getElementById('divide');
     obj.negative = document.getElementById('negative');
+    obj.backspace = document.getElementById('backspace');
     obj.equals = document.getElementById('equals');
     obj.clear = document.getElementById('clear');
     obj.mPlus = document.getElementById('mPlus');
@@ -48,57 +55,259 @@ function getCalcReferences() {
     return obj;
 }
 function setButtonEvents() {
-    for (let i = 0; i < 10; i++) ref[i].addEventListener('click', () => { doAction(NUM, i.toString()) });
-    ref.add.addEventListener('click', () => doAction(OPR_B, ADD));
-    ref.subtract.addEventListener('click', () => doAction(OPR_B, SUBTRACT));
-    ref.multiply.addEventListener('click', () => doAction(OPR_B, MULTIPLY));
-    ref.divide.addEventListener('click', () => doAction(OPR_B, DIVIDE));
-    ref.decimal.addEventListener('click', () => doAction(NUM, DECIMAL));
-    ref.negative.addEventListener('click', () => doAction(OPR_U, NEGATIVE));
-    ref.equals.addEventListener('click', () => doAction(FUN, EQUALS));
-    ref.clear.addEventListener('click', () => doAction(FUN, CLEAR));
-    ref.mPlus.addEventListener('click', () => doAction(FUN, M_PLUS));
-    ref.mMinus.addEventListener('click', () => doAction(FUN, M_MINUS));
-    ref.mR.addEventListener('click', () => doAction(FUN, M_RECALL));
-    ref.mC.addEventListener('click', () => doAction(FUN, M_CLEAR));
+    for (let i = 0; i < 10; i++) ref[i].addEventListener('click', () => { handleInput(NUM, i.toString()) });
+    ref.add.addEventListener('click', () => handleInput(OPR_B, ADD));
+    ref.subtract.addEventListener('click', () => handleInput(OPR_B, SUBTRACT));
+    ref.multiply.addEventListener('click', () => handleInput(OPR_B, MULTIPLY));
+    ref.divide.addEventListener('click', () => handleInput(OPR_B, DIVIDE));
+    ref.negative.addEventListener('click', () => handleInput(OPR_U, NEGATIVE));
+    ref.decimal.addEventListener('click', () => handleInput(NUM, DECIMAL));
+    ref.backspace.addEventListener('click', () => handleInput(NUM, BACKSPACE));
+    ref.equals.addEventListener('click', () => handleInput(FUN, EQUALS));
+    ref.clear.addEventListener('click', () => handleInput(FUN, CLEAR));
+    ref.mPlus.addEventListener('click', () => handleInput(FUN, M_PLUS));
+    ref.mMinus.addEventListener('click', () => handleInput(FUN, M_MINUS));
+    ref.mR.addEventListener('click', () => handleInput(FUN, M_RECALL));
+    ref.mC.addEventListener('click', () => handleInput(FUN, M_CLEAR));
 }
 //main
-function doAction(type, val) {
+function handleInput(type, val) {
     switch (type) {
         case NUM:
             numInput(val);
             break;
         case OPR_U:
+            unaryOprInput(val);
             break;
         case OPR_B:
+            binaryOprInput(val);
             break;
         case FUN:
+            funInput(val);
             break;
         default:
-            console.log(`doAction Error: unexpected type '${type}'`);
+            console.log(`handleInput Error: unexpected value '${type}'`);
     }
+    if(val !== M_CLEAR && val !== M_PLUS && val !== M_MINUS )equation.lastAction = val;
 }
 //input
-function numInput(input){
-    let txt = getLowerText();
-    if(txt.includes('.') && input === DECIMAL) return;
-    if(txt === '0' && input !== DECIMAL) txt = '';
-    txt += input;
+function numInput(input) {
+    let txt;
+    if(equation.lastAction === EQUALS) clear();
+    if (equation.opr === null) txt = equation.num1;
+    else txt = equation.num2;
+    if (txt !== null) txt = txt.toString();
+    else txt = '';
+    let isDecimal = txt.includes('.');
+    let maxLength = MAX_DIGITS;
+    if (isDecimal) maxLength++;
+    if (isDecimal && input === DECIMAL) return;
+    if (txt === '0' && input !== DECIMAL) txt = '';
+    if(input !== BACKSPACE) txt += input;
+    else{
+        if(txt.length > 0) txt = txt.slice(0, txt.length - 1);
+    }
+    if (equation.opr === null) {
+        usingNum1 = true;
+        equation.num1 = txt;
+    }
+    else {
+        usingNum1 = false;
+        equation.num2 = txt;
+    }
     setLowerText(txt);
 }
+
+function unaryOprInput(opr) {
+    switch (opr) {
+        case NEGATIVE:
+            if (usingNum1) {
+                equation.num1 *= -1;
+                setLowerText(equation.num1);
+            }
+            else {
+                equation.num2 *= -1;
+                setLowerText(equation.num2);
+            }
+            break;
+        default:
+            console.log(`unaryOprInput Error: unexpected value '${opr}'`);
+    }
+}
+function binaryOprInput(opr) {
+    if (isEquationValid()) {
+        equals(true);
+        equation.num2 = null;
+    }
+    equation.opr = opr;
+    setUpperText(`${equation.num1} ${opr}`);
+    usingNum1 = false;
+}
+function funInput(fun) {
+    switch (fun) {
+        case EQUALS:
+            equals();
+            break;
+        case CLEAR:
+            clear();
+            break;
+        case M_CLEAR:
+            
+            console.log('clear');
+            mem1 = 0;
+            break;
+        case M_RECALL:
+            if(equation.lastAction === EQUALS) clear();
+            if (equation.opr === null) {
+                usingNum1 = true;
+                equation.num1 = mem1;
+            }
+            else {
+                usingNum1 = false;
+                equation.num2 = mem1;
+            }
+            setLowerText(mem1);
+            console.log('recall');
+            break;
+        case M_PLUS:
+            if(equation.opr === null || equation.num2 === null || equation.lastAction === EQUALS) mem1 += +equation.num1;
+            else mem1+= +equation.num2;
+            console.log('plus');
+            break;
+        case M_MINUS:
+            if(equation.opr === null || equation.num2 === null || equation.lastAction === EQUALS) mem1 -= +equation.num1;
+            else mem1 -= +equation.num2;
+            console.log('minus');
+            break;
+
+        default:
+            console.log(`binaryOprInput Error: unexpected value '${fun}'`);
+    }
+    console.log(mem1);
+}
+function equals(fromOperator = false) {
+    if (!isEquationValid()) return;
+    if (equation.lastAction === EQUALS && fromOperator) return;
+    let num1 = +equation.num1;
+    let num2 = +equation.num2;
+    let opr = equation.opr;
+    let result = null;
+    switch (opr) {
+        case MULTIPLY:
+            result = num1 * num2;
+            break;
+        case DIVIDE:
+            if (num1 !== 0 && num2 !== 0)
+                result = num1 / num2;
+            break;
+        case ADD:
+            result = num1 + num2;
+            break;
+        case SUBTRACT:
+            result = num1 - num2;
+            break;
+        default:
+            console.log(`equals Error: unexpected operator '${opr}'`);
+    }
+    if (result === null) return;
+    setUpperText(`${num1} ${opr} ${num2} =`);
+    equation.num1 = result;
+    setLowerText(result);
+    usingNum1 = true;
+}
+function clear() {
+    equation.num1 = 0;
+    equation.num2 = null;
+    equation.opr = null;
+    equation.lastAction = null;
+    setUpperText('');
+    setLowerText('0');
+}
 //common functions
-function setLowerText(str){
+function isEquationValid() {
+    for (arr of Object.entries(equation)) {
+        if (arr[1] === null) {
+            console.log(arr[0] + ` is null.`);
+            return false;
+        }
+    }
+    return true;
+}
+function setLowerText(str) {
+    str = formatStr(str);
     ref.displayBottom.innerText = str;
 }
-function getLowerText(){
+function getLowerText() {
+    console.log('get');
     return ref.displayBottom.innerText;
 }
-function setUpperText(str){
-    ref.displayBottom.innerText = str;
+function setUpperText(str) {
+    str = formatStr(str);
+    ref.displayTop.innerText = str;
 }
-function getUpperText(){
+function getUpperText() {
     return ref.displayBottom.innerText;
 }
-function setMessageText(str){
+function setMessageText(str) {
     console.log(`Message text box not yet implemented.. '${str}' not displayed.`);
+}
+//adds commas to numbers for better visual formatting
+function formatStr(str) {
+    if (typeof (str) !== typeof ('')) str = str.toString();
+    let numArr = getWholeNumbers(str);
+    if (numArr.length <= 0) return str; //if no numbers present, return original string
+    numArr = addParenthesis(numArr);
+    let newStr = str.slice(0, numArr[0].start);
+    for (let i = 0; i < numArr.length; i++) {
+        newStr += numArr[i].num;
+        if ((i + 1) < numArr.length) {
+            newStr += str.slice(numArr[i].end, numArr[i + 1].start);
+        }
+        else {
+            newStr += str.slice(numArr[i].end, str.length);
+        }
+    }
+    return newStr;
+
+
+    function addParenthesis(objArr = [{ num: '' }]) {
+        objArr.forEach((obj) => {
+            let num = obj.num;
+            if (num.length > 3) {
+                for (let i = num.length - 3; i > 0; i -= 3) {
+                    num = num.slice(0, i) + ',' + num.slice(i, num.length);
+                }
+            }
+            obj.num = num;
+        })
+        return objArr;
+    }
+
+    function getWholeNumbers(str = '', initialIndex = 0, objArr = []) {
+        if (initialIndex >= str.length) return objArr;
+        let startIndex = null;
+        let endIndex = null;
+        let i = initialIndex
+        for (i = i; i < str.length; i++) {
+            if (Number.isInteger(+str[i]) && str[i] !== ' ') {
+                if (startIndex === null) startIndex = i;
+            } else {
+                if (startIndex !== null) {
+                    endIndex = i;
+                    i++;
+                    break;
+                }
+            }
+        }
+        if (startIndex !== null && endIndex === null) endIndex = i;
+        if (startIndex > 0 && str[startIndex - 1] === '.') return getWholeNumbers(str, i, objArr);
+        if (startIndex !== null && endIndex !== null) {
+            objArr.push({
+                start: startIndex,
+                end: endIndex,
+                num: str.slice(startIndex, endIndex)
+            });
+        }
+        return getWholeNumbers(str, i, objArr);
+    }
 }
