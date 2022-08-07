@@ -31,6 +31,7 @@ var usingNum1 = true;
 //initialization
 const ref = getCalcReferences();
 setButtonEvents();
+document.addEventListener('keydown', handleKeyInput);
 
 function getCalcReferences() {
     let obj = {};
@@ -70,6 +71,44 @@ function setButtonEvents() {
     ref.mR.addEventListener('click', () => handleInput(FUN, M_RECALL));
     ref.mC.addEventListener('click', () => handleInput(FUN, M_CLEAR));
 }
+function handleKeyInput(e) {
+    let key = e.key;
+    if (Number.isInteger(+key)) {
+        ref[key].click();
+        return;
+    }
+    switch (key) {
+        case '.': ref.decimal.click();
+            break;
+        case 'n':
+            ref.negative.click();
+            break;
+        case '+':
+            ref.add.click();
+            break;
+        case '-':
+            ref.subtract.click();
+            break;
+        case 'x':
+        case '*':
+            ref.multiply.click();
+            break;
+        case '/':
+            ref.divide.click();
+            break;
+        case 'Backspace':
+            ref.backspace.click();
+            break;
+        case '=':
+        case 'Enter':
+            ref.equals.click();
+            break;
+        case 'c':
+            ref.clear.click();
+            break;
+        default: console.log(`Unrecognized key: '${key}'`);
+    }
+}
 //main
 function handleInput(type, val) {
     switch (type) {
@@ -88,12 +127,12 @@ function handleInput(type, val) {
         default:
             console.log(`handleInput Error: unexpected value '${type}'`);
     }
-    if(val !== M_CLEAR && val !== M_PLUS && val !== M_MINUS )equation.lastAction = val;
+    if (val !== M_CLEAR && val !== M_PLUS && val !== M_MINUS) equation.lastAction = val;
 }
 //input
 function numInput(input) {
     let txt;
-    if(equation.lastAction === EQUALS) clear();
+    if (equation.lastAction === EQUALS) clear();
     if (equation.opr === null) txt = equation.num1;
     else txt = equation.num2;
     if (txt !== null) txt = txt.toString();
@@ -103,9 +142,9 @@ function numInput(input) {
     if (isDecimal) maxLength++;
     if (isDecimal && input === DECIMAL) return;
     if (txt === '0' && input !== DECIMAL) txt = '';
-    if(input !== BACKSPACE) txt += input;
-    else{
-        if(txt.length > 0) txt = txt.slice(0, txt.length - 1);
+    if (input !== BACKSPACE) txt += input;
+    else {
+        if (txt.length > 0) txt = txt.slice(0, txt.length - 1);
     }
     if (equation.opr === null) {
         usingNum1 = true;
@@ -152,12 +191,12 @@ function funInput(fun) {
             clear();
             break;
         case M_CLEAR:
-            
+
             console.log('clear');
             mem1 = 0;
             break;
         case M_RECALL:
-            if(equation.lastAction === EQUALS) clear();
+            if (equation.lastAction === EQUALS) clear();
             if (equation.opr === null) {
                 usingNum1 = true;
                 equation.num1 = mem1;
@@ -170,12 +209,12 @@ function funInput(fun) {
             console.log('recall');
             break;
         case M_PLUS:
-            if(equation.opr === null || equation.num2 === null || equation.lastAction === EQUALS) mem1 += +equation.num1;
-            else mem1+= +equation.num2;
+            if (equation.opr === null || equation.num2 === null || equation.lastAction === EQUALS) mem1 += +equation.num1;
+            else mem1 += +equation.num2;
             console.log('plus');
             break;
         case M_MINUS:
-            if(equation.opr === null || equation.num2 === null || equation.lastAction === EQUALS) mem1 -= +equation.num1;
+            if (equation.opr === null || equation.num2 === null || equation.lastAction === EQUALS) mem1 -= +equation.num1;
             else mem1 -= +equation.num2;
             console.log('minus');
             break;
