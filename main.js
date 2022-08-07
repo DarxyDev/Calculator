@@ -127,7 +127,7 @@ function handleInput(type, val) {
         default:
             console.log(`handleInput Error: unexpected value '${type}'`);
     }
-    if (val !== M_CLEAR && val !== M_PLUS && val !== M_MINUS) equation.lastAction = val;
+    //if (val !== M_CLEAR && val !== M_PLUS && val !== M_MINUS) equation.lastAction = val;
 }
 //input
 function numInput(input) {
@@ -155,6 +155,7 @@ function numInput(input) {
         equation.num2 = txt;
     }
     setLowerText(txt);
+    equation.lastAction = input;
 }
 
 function unaryOprInput(opr) {
@@ -181,6 +182,7 @@ function binaryOprInput(opr) {
     equation.opr = opr;
     setUpperText(`${equation.num1} ${opr}`);
     usingNum1 = false;
+    equation.lastAction = opr;
 }
 function funInput(fun) {
     switch (fun) {
@@ -253,6 +255,7 @@ function equals(fromOperator = false) {
     equation.num1 = result;
     setLowerText(result);
     usingNum1 = true;
+    equation.lastAction = EQUALS;
 }
 function clear() {
     equation.num1 = 0;
