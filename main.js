@@ -31,7 +31,7 @@ var usingNum1 = true;
 //initialization
 const ref = getCalcReferences();
 setButtonEvents();
-//functions
+
 function getCalcReferences() {
     let obj = {};
     for (let i = 0; i < 10; i++) {
