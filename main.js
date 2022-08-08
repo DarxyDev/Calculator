@@ -353,3 +353,32 @@ function formatStr(str) {
         return getWholeNumbers(str, i, objArr);
     }
 }
+function floatToRational(num){
+    if(Number.isNaN(+num)){
+        console.log(`floatToRational error: '${num}' is not a number.`);
+        return NaN;
+    }
+    num = num.toString();
+    let decIndex = num.indexOf('.');
+    if(decIndex < 0) decIndex = num.length;
+    let rational = {
+        w: +num.slice(0,decIndex) ,
+        n: +num.slice(decIndex + 1, num.length),
+        d: 0
+    }
+    if(decIndex < num.length) rational.d = Math.pow(10, num.length - decIndex - 1);
+    return rational;
+}
+function rationalToFloat(rat){
+    if(rat.d === 0) return rat.w;
+    let w = rat.w.toString();
+    let n = rat.n.toString();
+    let d = rat.d.toString();
+    let z = '';
+    let decPlaces = d.length - 1;
+    for( ; decPlaces > n.length; decPlaces--){
+        z = '0' + z;
+    }
+    return +(w + '.' + z + n);
+}
+console.log('implement rationals');
