@@ -226,6 +226,37 @@ function funInput(fun) {
     }
     console.log(mem1);
 }
+// function equals(fromOperator = false) {
+//     if (!isEquationValid()) return;
+//     if (equation.lastAction === EQUALS && fromOperator) return;
+//     let num1 = +equation.num1;
+//     let num2 = +equation.num2;
+//     let opr = equation.opr;
+//     let result = null;
+//     switch (opr) {
+//         case MULTIPLY:
+//             result = num1 * num2;
+//             break;
+//         case DIVIDE:
+//             if (num1 !== 0 && num2 !== 0)
+//                 result = num1 / num2;
+//             break;
+//         case ADD:
+//             result = num1 + num2;
+//             break;
+//         case SUBTRACT:
+//             result = num1 - num2;
+//             break;
+//         default:
+//             console.log(`equals Error: unexpected operator '${opr}'`);
+//     }
+//     if (result === null) return;
+//     setUpperText(`${num1} ${opr} ${num2} =`);
+//     equation.num1 = result;
+//     setLowerText(result);
+//     usingNum1 = true;
+//     equation.lastAction = EQUALS;
+// }
 function equals(fromOperator = false) {
     if (!isEquationValid()) return;
     if (equation.lastAction === EQUALS && fromOperator) return;
@@ -235,27 +266,52 @@ function equals(fromOperator = false) {
     let result = null;
     switch (opr) {
         case MULTIPLY:
-            result = num1 * num2;
+            num1 = floatToRational(num1);
+            num2 = floatToRational(num2);
+            result = multiplyRat(num1, num2);
             break;
         case DIVIDE:
-            if (num1 !== 0 && num2 !== 0)
-                result = num1 / num2;
+            num1 = floatToRational(num1);
+            num2 = floatToRational(1 / num2);
+            console.log(`dividend:`);
+            console.log(num2);
+            result = multiplyRat(num1, num2);
             break;
         case ADD:
-            result = num1 + num2;
+            num1 = floatToRational(num1);
+            num2 = floatToRational(num2);
+            result = addRat(num1, num2);
             break;
         case SUBTRACT:
-            result = num1 - num2;
+            num1 = floatToRational(num1);
+            num2 = floatToRational(-1 * num2);
+            result = addRat(num1, num2);
             break;
         default:
             console.log(`equals Error: unexpected operator '${opr}'`);
     }
     if (result === null) return;
-    setUpperText(`${num1} ${opr} ${num2} =`);
+    setUpperText(`${equation.num1} ${opr} ${equation.num2} =`);
     equation.num1 = result;
     setLowerText(result);
     usingNum1 = true;
     equation.lastAction = EQUALS;
+}
+function multiplyRat(rat1, rat2){
+    let num = rat1.w * rat2.w * rat1.d * rat2.d;
+    num += (rat1.w * rat2.n) * rat1.d;
+    num += (rat1.n * rat2.w) * rat2.d;
+    num += (rat1.n * rat2.n);
+    num /= rat1.d * rat2.d;
+    return num;
+}
+console.log('5.25 / 3.5 !== 1.49999');
+function addRat(rat1, rat2){
+    let num = rat1.w + rat2.w;
+    let n = (rat1.n * rat2.d) + (rat2.n * rat1.d);
+    n /= rat1.d * rat2.d;
+    num += n;
+    return num;
 }
 function clear() {
     equation.num1 = 0;
@@ -293,6 +349,7 @@ function getUpperText() {
 function setMessageText(str) {
     console.log(`Message text box not yet implemented.. '${str}' not displayed.`);
 }
+
 //adds commas to numbers for better visual formatting
 function formatStr(str) {
     if (typeof (str) !== typeof ('')) str = str.toString();
@@ -353,20 +410,23 @@ function formatStr(str) {
         return getWholeNumbers(str, i, objArr);
     }
 }
+//represents numbers as ('w'+'n' / d)
 function floatToRational(num){
     if(Number.isNaN(+num)){
         console.log(`floatToRational error: '${num}' is not a number.`);
         return NaN;
     }
+    let isNegative = (num < 0);
     num = num.toString();
     let decIndex = num.indexOf('.');
     if(decIndex < 0) decIndex = num.length;
     let rational = {
         w: +num.slice(0,decIndex) ,
         n: +num.slice(decIndex + 1, num.length),
-        d: 0
+        d: 1
     }
     if(decIndex < num.length) rational.d = Math.pow(10, num.length - decIndex - 1);
+    if(isNegative) rational.n *= -1;
     return rational;
 }
 function rationalToFloat(rat){
