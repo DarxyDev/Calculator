@@ -1,10 +1,21 @@
+function test() {
+    ref[5].click()
+    ref.decimal.click();
+    ref[2].click();
+    ref[5].click();
+    ref.divide.click();
+    ref[3].click();
+    ref.decimal.click();
+    ref[5].click();
+    ref.equals.click();
+}
 //const types
 const OPR_B = 'operation_binary';
 const OPR_U = 'operation_unary'
 const NUM = 'number';
 const FUN = 'function';
 // const values
-const MAX_DIGITS = 13;
+const MAX_DECIMAL = 10000000000000;
 //const names
 const ADD = '+';
 const SUBTRACT = '-';
@@ -73,7 +84,8 @@ function setButtonEvents() {
 }
 function handleKeyInput(e) {
     let key = e.key;
-    if (Number.isInteger(+key)) {
+    if (Number.isInteger(+key) && (key !== ' ')) {
+        console.log(key);
         ref[key].click();
         return;
     }
@@ -138,8 +150,6 @@ function numInput(input) {
     if (txt !== null) txt = txt.toString();
     else txt = '';
     let isDecimal = txt.includes('.');
-    let maxLength = MAX_DIGITS;
-    if (isDecimal) maxLength++;
     if (isDecimal && input === DECIMAL) return;
     if (txt === '0' && input !== DECIMAL) txt = '';
     if (input !== BACKSPACE) txt += input;
@@ -224,39 +234,7 @@ function funInput(fun) {
         default:
             console.log(`binaryOprInput Error: unexpected value '${fun}'`);
     }
-    console.log(mem1);
 }
-// function equals(fromOperator = false) {
-//     if (!isEquationValid()) return;
-//     if (equation.lastAction === EQUALS && fromOperator) return;
-//     let num1 = +equation.num1;
-//     let num2 = +equation.num2;
-//     let opr = equation.opr;
-//     let result = null;
-//     switch (opr) {
-//         case MULTIPLY:
-//             result = num1 * num2;
-//             break;
-//         case DIVIDE:
-//             if (num1 !== 0 && num2 !== 0)
-//                 result = num1 / num2;
-//             break;
-//         case ADD:
-//             result = num1 + num2;
-//             break;
-//         case SUBTRACT:
-//             result = num1 - num2;
-//             break;
-//         default:
-//             console.log(`equals Error: unexpected operator '${opr}'`);
-//     }
-//     if (result === null) return;
-//     setUpperText(`${num1} ${opr} ${num2} =`);
-//     equation.num1 = result;
-//     setLowerText(result);
-//     usingNum1 = true;
-//     equation.lastAction = EQUALS;
-// }
 function equals(fromOperator = false) {
     if (!isEquationValid()) return;
     if (equation.lastAction === EQUALS && fromOperator) return;
@@ -266,16 +244,16 @@ function equals(fromOperator = false) {
     let result = null;
     switch (opr) {
         case MULTIPLY:
-            num1 = floatToRational(num1);
-            num2 = floatToRational(num2);
-            result = multiplyRat(num1, num2);
+            //num1 = floatToRational(num1);
+            //num2 = floatToRational(num2);
+            //result = multiplyRat(num1, num2);
+            result = num1 * num2;
             break;
         case DIVIDE:
-            num1 = floatToRational(num1);
-            num2 = floatToRational(1 / num2);
-            console.log(`dividend:`);
-            console.log(num2);
-            result = multiplyRat(num1, num2);
+            //num1 = floatToRational(num1);
+            //num2 = floatToRational(1 / num2);
+            //result = multiplyRat(num1, num2);
+            result = num1 / num2;
             break;
         case ADD:
             num1 = floatToRational(num1);
@@ -291,13 +269,14 @@ function equals(fromOperator = false) {
             console.log(`equals Error: unexpected operator '${opr}'`);
     }
     if (result === null) return;
+    //result = roundNum(result);
     setUpperText(`${equation.num1} ${opr} ${equation.num2} =`);
     equation.num1 = result;
     setLowerText(result);
     usingNum1 = true;
     equation.lastAction = EQUALS;
 }
-function multiplyRat(rat1, rat2){
+function multiplyRat(rat1, rat2) {  //causes other inaccuracies, do not use without fixing
     let num = rat1.w * rat2.w * rat1.d * rat2.d;
     num += (rat1.w * rat2.n) * rat1.d;
     num += (rat1.n * rat2.w) * rat2.d;
@@ -305,12 +284,22 @@ function multiplyRat(rat1, rat2){
     num /= rat1.d * rat2.d;
     return num;
 }
-console.log('5.25 / 3.5 !== 1.49999');
-function addRat(rat1, rat2){
+function addRat(rat1, rat2) {
     let num = rat1.w + rat2.w;
     let n = (rat1.n * rat2.d) + (rat2.n * rat1.d);
     n /= rat1.d * rat2.d;
     num += n;
+    return num;
+}
+function roundNum(num) { //round on display, not calculation, to prevent precision loss.
+    num = floatToRational(num);
+    if (num.d > MAX_DECIMAL) {
+        let difference = num.d / MAX_DECIMAL;
+        num.n /= difference;
+        num.n = Math.round(num.n);
+        num.d = MAX_DECIMAL;
+    }
+    num = rationalToFloat(num);
     return num;
 }
 function clear() {
@@ -324,10 +313,7 @@ function clear() {
 //common functions
 function isEquationValid() {
     for (arr of Object.entries(equation)) {
-        if (arr[1] === null) {
-            console.log(arr[0] + ` is null.`);
-            return false;
-        }
+        if (arr[1] === null) return false;
     }
     return true;
 }
@@ -355,7 +341,7 @@ function formatStr(str) {
     if (typeof (str) !== typeof ('')) str = str.toString();
     let numArr = getWholeNumbers(str);
     if (numArr.length <= 0) return str; //if no numbers present, return original string
-    numArr = addParenthesis(numArr);
+    numArr = addCommas(numArr);
     let newStr = str.slice(0, numArr[0].start);
     for (let i = 0; i < numArr.length; i++) {
         newStr += numArr[i].num;
@@ -369,7 +355,7 @@ function formatStr(str) {
     return newStr;
 
 
-    function addParenthesis(objArr = [{ num: '' }]) {
+    function addCommas(objArr = [{ num: '' }]) {
         objArr.forEach((obj) => {
             let num = obj.num;
             if (num.length > 3) {
@@ -411,34 +397,33 @@ function formatStr(str) {
     }
 }
 //represents numbers as ('w'+'n' / d)
-function floatToRational(num){
-    if(Number.isNaN(+num)){
+function floatToRational(num) {
+    if (Number.isNaN(+num)) {
         console.log(`floatToRational error: '${num}' is not a number.`);
         return NaN;
     }
     let isNegative = (num < 0);
     num = num.toString();
     let decIndex = num.indexOf('.');
-    if(decIndex < 0) decIndex = num.length;
+    if (decIndex < 0) decIndex = num.length;
     let rational = {
-        w: +num.slice(0,decIndex) ,
+        w: +num.slice(0, decIndex),
         n: +num.slice(decIndex + 1, num.length),
         d: 1
     }
-    if(decIndex < num.length) rational.d = Math.pow(10, num.length - decIndex - 1);
-    if(isNegative) rational.n *= -1;
+    if (decIndex < num.length) rational.d = Math.pow(10, num.length - decIndex - 1);
+    if (isNegative) rational.n *= -1;
     return rational;
 }
-function rationalToFloat(rat){
-    if(rat.d === 0) return rat.w;
+function rationalToFloat(rat) {
+    if (rat.d === 0) return rat.w;
     let w = rat.w.toString();
     let n = rat.n.toString();
     let d = rat.d.toString();
     let z = '';
     let decPlaces = d.length - 1;
-    for( ; decPlaces > n.length; decPlaces--){
+    for (; decPlaces > n.length; decPlaces--) {
         z = '0' + z;
     }
     return +(w + '.' + z + n);
 }
-console.log('implement rationals');
