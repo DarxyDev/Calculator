@@ -204,8 +204,6 @@ function funInput(fun) {
             clear();
             break;
         case M_CLEAR:
-
-            console.log('clear');
             mem1 = 0;
             break;
         case M_RECALL:
@@ -219,17 +217,14 @@ function funInput(fun) {
                 equation.num2 = mem1;
             }
             setLowerText(mem1);
-            console.log('recall');
             break;
         case M_PLUS:
             if (equation.opr === null || equation.num2 === null || equation.lastAction === EQUALS) mem1 += +equation.num1;
             else mem1 += +equation.num2;
-            console.log('plus');
             break;
         case M_MINUS:
             if (equation.opr === null || equation.num2 === null || equation.lastAction === EQUALS) mem1 -= +equation.num1;
             else mem1 -= +equation.num2;
-            console.log('minus');
             break;
 
         default:
