@@ -49,6 +49,7 @@ function getCalcReferences() {
     for (let i = 0; i < 10; i++) {
         obj[i] = document.getElementById('num' + i);
     }
+    obj.display = document.getElementById('display');
     obj.displayTop = document.getElementById('display-top');
     obj.displayBottom = document.getElementById('display-bottom');
     obj.decimal = document.getElementById('decimal');
@@ -320,6 +321,7 @@ function isEquationValid() {
 function setLowerText(str) {
     str = formatStr(str);
     ref.displayBottom.innerText = str;
+    resizeElementFont(ref.displayBottom, ref.display, 2);
 }
 function getLowerText() {
     console.log('get');
@@ -328,6 +330,7 @@ function getLowerText() {
 function setUpperText(str) {
     str = formatStr(str);
     ref.displayTop.innerText = str;
+    resizeElementFont(ref.displayTop, ref.display, 1);
 }
 function getUpperText() {
     return ref.displayBottom.innerText;
@@ -335,7 +338,22 @@ function getUpperText() {
 function setMessageText(str) {
     console.log(`Message text box not yet implemented.. '${str}' not displayed.`);
 }
-
+function resizeElementFont(element, parentElement, defaultFontSize = 1){
+    let currentFontSize = defaultFontSize;
+    element.style.fontSize = currentFontSize.toString() + 'em';
+    let currentWidth = element.offsetWidth;
+    let parentWidth = parentElement.offsetWidth;
+    if( currentWidth <= parentWidth) return;
+    
+    //could be made more efficient, but seems fast enough for this. need to test on slow pc
+    while((currentWidth > parentWidth) && (currentFontSize > 0.0000001)){ 
+        currentFontSize *= 1 - ( 1 / element.innerText.length);
+        element.style.fontSize = currentFontSize.toString() + 'em';
+        currentWidth = element.offsetWidth;
+    }
+    console.log(currentFontSize);
+    return currentFontSize;
+}
 //adds commas to numbers for better visual formatting
 function formatStr(str) {
     if (typeof (str) !== typeof ('')) str = str.toString();

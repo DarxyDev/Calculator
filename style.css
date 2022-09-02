@@ -91,13 +91,17 @@ button:hover{
     display:flex;
     flex-direction:column;
     justify-content:space-between;
-    align-items:right;
+    align-items:flex-end;
 }
 .sub-display{
     text-align:right;
     padding:.25em;
 }
-#display-bottom{font-size:2em;}
+#display-bottom{
+    font-size:2em;
+    width: fit-content;
+}
+#display-top{font-size:1em;}
 /* mem buttons */
 #mPlus{grid-area:mp;}
 #mMinus{grid-area:mm;}
